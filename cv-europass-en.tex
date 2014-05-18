@@ -1,0 +1,567 @@
+%==================================================================================================
+% Workaround for XeTeX compilation with the 'fontspec' and 'europecv' packages
+%==================================================================================================
+
+% Pretend that the 'inputenc' package was loaded with the 'utf8x' option
+
+\makeatletter
+    \@namedef{ver@inputenc.sty}{}
+    \@namedef{opt@inputenc.sty}{utf8x}
+\makeatother
+
+\expandafter\let\csname ver@inputenc.sty \endcsname\relax
+
+% Neutralize the '\inputencoding' command used by the 'europecv' package
+
+\providecommand{\inputencoding}[1]{}
+
+
+%==================================================================================================
+% LaTeX markup to typeset an English Curriculm Vitae using the 'europecv' package
+%==================================================================================================
+
+\documentclass[a4paper,english,totpages]{europecv}
+
+\usepackage[top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm]{geometry}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{combelow}
+
+\useshorthands{'}
+\defineshorthand{'s}{\cb{s}}
+\defineshorthand{'t}{\cb{t}}
+\defineshorthand{'S}{\cb{S}}
+\defineshorthand{'T}{\cb{T}}
+
+%--------------------------------------------------------------------------------------------------
+% General configuration for the loaded packages
+%--------------------------------------------------------------------------------------------------
+
+\defaultfontfeatures{Ligatures=TeX}
+% \setmainfont{Calibri}
+
+\setlist{
+    leftmargin=*,
+    nolistsep,
+    itemsep=2pt
+}
+
+\definecolor{RoyalBlue}{RGB}{65, 105, 225}
+
+\hypersetup{
+    bookmarksopen=false,
+    colorlinks=true,
+    urlcolor=RoyalBlue,
+    pdfpagemode=UseNone,
+    pdfstartview={FitH},
+    pdfdisplaydoctitle=true,
+    pdfinfo={
+        Title={Dan Persa's Curriculm Vitae},
+        Author={Dan Persa},
+        Subject={Curriculum Vitae typesetted in LaTeX based on the Europass model}
+    },
+    pdfcreator={TeXstudio (XeTeX)}
+}
+
+% Reduce the amount of lookahead to avoid clearing the footer on wrong pages
+
+\setcounter{LTchunksize}{1}
+
+%--------------------------------------------------------------------------------------------------
+% Allow changes to internal LaTeX macros outside packages/classes
+%--------------------------------------------------------------------------------------------------
+
+\makeatletter
+
+    % Improve 'europecv' language table and string styles
+
+    \def\ecv@mothertonguekey{\ecv@utf{\normalsize Mother Tongue}}
+    \def\ecv@assesskey{\ecv@utf{\normalsize Self-Assessment}}
+    \def\ecv@levelkey{\ecv@utf{\normalsize European Level}}
+    \def\ecv@listenkey{\vspace{2pt}\ecv@utf{\scriptsize Listening}}
+    \def\ecv@readkey{\vspace{2pt}\ecv@utf{\scriptsize Reading}}
+    \def\ecv@interactkey{\vspace{2pt}\ecv@utf{\scriptsize Spoken Interaction}}
+    \def\ecv@productkey{\vspace{2pt}\ecv@utf{\scriptsize Spoken Production}}
+    \def\ecv@cefbasickey{\ecv@utf{\scriptsize Basic User}}
+    \def\ecv@cefindepkey{\ecv@utf{{\scriptsize Independent User}}}
+    \def\ecv@cefprofkey{\ecv@utf{\scriptsize Proficient User}}
+    \def\ecv@langfooterkey{\ecv@utf{\href{http://europass.cedefop.europa.eu/en/resources/european-language-levels-cefr}{Common European Framework of Reference (CEF) Level}}}
+
+    \renewcommand*\ecvCEF[2]{
+        \begin{tabular}{@{}>{\footnotesize}m{.2\ecv@langparwidth}@{\hspace{1mm}}>{\footnotesize\centering}m{.74\ecv@langparwidth}@{}}
+            #1 & #2\tabularnewline
+        \end{tabular}
+    }
+
+    % Change lists bullet style to a tiny black dot
+
+    % \renewcommand{\labelitemi}{$\bullet$}
+    \renewcommand{\labelitemi}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+    % Add a blue underline to URL links
+
+    \Hy@AtBeginDocument{
+        \def\@urlbordercolor{0.06 0.3 0.55}
+        \def\@pdfborderstyle{/S/U/W 1}
+    }
+
+    % Disable the total pages number link to the last page
+
+    \def\ecv@totpages{~/~\ref*{TotPages}}
+
+\makeatother
+
+%--------------------------------------------------------------------------------------------------
+% New commands to simplify the CV content markup
+%--------------------------------------------------------------------------------------------------
+
+\newcommand{\ccvsection}[2]{\pdfbookmark{#2}{#1}\ecvsection{#2}}
+\newcommand{\ccvitem}[2]{\ecvitem[5pt]{#1}{#2}}
+
+\newcommand{\ccvattachment}[4][10pt]{\pdfbookmark{#3}{attachment#2}{\large\par\textbf{#3}}\vspace{#1} & {\par#4}\tabularnewline\nopagebreak}
+
+\newcommand{\weblink}[1]{\href{#1}{#1}}
+\newcommand{\maillink}[1]{\href{mailto:#1}{#1}}
+
+%--------------------------------------------------------------------------------------------------
+% The beginning of the actual CV document
+%--------------------------------------------------------------------------------------------------
+
+\begin{document}
+
+    % Generic Europass CV information
+
+    \ecvfootername{Dan Persa}
+    \ecvfootnote{To connect with me on LinkedIn, please visit:\newline
+        \weblink{https://www.linkedin.com/in/danpersa}}
+
+    % Decrease the total number of pages by the amount of appendix pages
+
+    \addtocounter{TotPages}{0}
+
+    % The beginning of the Europass CV content
+
+    \begin{europecv}
+
+        % Top left profile photo
+
+     %   & \ecvspace{-2.2cm} \raggedleft
+     %   \includegraphics[width=3.5cm]{graphics/profile-photo}
+     %   \ecvspace{-2.2cm} \tabularnewline
+
+        % Personal Information
+
+        \ccvsection{personal}{Personal Information}
+
+        \ccvitem{First Names / Surnames}{\large\textbf{Dan Persa}}
+        \InputIfFileExists{includes/sensible-en}{}{
+            \ccvitem{Address}{\textit{(not shown due to privacy protection)}}
+            \ccvitem{Mobile}{\textit{(not shown due to privacy protection)}}
+            \ccvitem{Email}{\textit{(not shown due to privacy protection)}}
+        }
+        \ccvitem{Website}{\weblink{https://github.com/danpersa}}
+        \ccvitem{Nationality}{Romanian}
+        \ccvitem{Date of Birth}{8$^{th}$ March, 1985}
+        \ccvitem{Gender}{Male}
+
+        % Occupational Field
+
+        \tabularnewline
+        \ccvitem{\large\textbf{Occupational Field}}{\large\textbf{Software Engineering / Programmer}}
+
+        % Work Experience
+
+        \ccvsection{work}{Work Experience}
+
+        % Work Experience @ Zalando
+        \ccvitem{\textbf{{\large May 2013 $\longrightarrow$ Present}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Zalando (\weblink{http://www.zalando.de}), Berlin, Germany}
+        \ccvitem{Highlights}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Agile methodologies, having 1 week sprints
+            \item Develop a RESTful API
+            \item Work on software accessed by hundreds of users per second
+            \item Design a new database for the Article Reviews project
+          \end{itemize}
+        }
+        \ccvitem{Projects}{Filter Refactoring
+          \begin{itemize}
+            \item Rewrite the server side code of the filters from the zalando.de website, so that they support multi selection, negative filtering
+            \item Introduce Spring MVC to the catalog page.
+            \item Write unit and integration tests
+          \end{itemize}
+
+          \bigskip Article Reviews
+          \begin{itemize}
+            \item Create the architecture of a RESTful API that deals with creation, and management of the reviews for the zalando.de website
+            \item Implement the RESTful API using JAX-RS and Spring
+            \item Design the PostgreSQL database and write stored procedures
+            \item Work with Solr for indexing the reviews
+             \item Write unit tests, integration tests and acceptance tests using Cucumber
+          \end{itemize}
+
+          \bigskip As part of the Mentoring Team:
+          \begin{itemize}
+            \item Give monthly presentations about the Google Guava library
+            \item Organize monthly workshops about web services
+          \end{itemize}
+
+          \bigskip As part of the Git Ambassadors Team:
+          \begin{itemize}
+            \item Introduce git to the other developers
+            \item Help the others with their daily git problems
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools:}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: Spring MVC, Spring Core, Guava, Solr4J, JUnit, Mockito, JAX-RS, SOAP, Cucumber
+            \item Web Server: Tomcat 7
+            \item IDE: IntelliJ
+            \item Database: PostgreSQL
+            \item Full text search: Solr
+            \item Build management and testing: Maven,
+            \item Revision control: Git -> Atlassian Stash
+            \item Issue tracking: JIRA
+            \item Continuous Integration: Jenkins
+            \item Documentation: Confluence
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Fashion \& Technology}
+
+        % Work Experience @ Groupon
+        \tabularnewline
+        \ccvitem{\textbf{{\large Nov 2012 $\longrightarrow$ Apr 2013}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Groupon (\weblink{http://www.groupon.de}), Berlin, Germany}
+        \ccvitem{Highlights}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Develop a RESTful API
+            \item Work in the team that sends millions of daily newsletters
+            \item Develop new functionalities based on specifications
+            \item Write automated testing suites for the applications
+            \item Modify the existing database, to fit the new functionalities
+            \item Write documentation
+            \item Use SCRUM, having 2 week sprints
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools:}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: Spring MVC, Spring Core, Hibernate, Jersy, RESTEasy, SOAP, WDSL, JUnit, Mockito
+            \item Web Server: Tomcat
+            \item IDE: Netbeans
+            \item Database: Postgres
+            \item Build management and testing: Maven
+            \item Revision control: Git
+            \item Issue tracking: JIRA
+            \item Continuous Integration: Jenkins
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Coupons \& Software Development}
+
+        % Work Experience @ KEBA
+        \tabularnewline
+        \ccvitem{\textbf{{\large Aug 2011 $\longrightarrow$ Oct 2012}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Keba (\weblink{http://www.keba.com/}), Bucharest, Romania}
+        \ccvitem{Highlights}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Develop new functionalities based on specifications
+            \item Write automated testing suites for the applications
+            \item Modify the existing database, to fit the new functionalities
+            \item Write the installation and user's manual
+            \item Use Agile methodologies
+          \end{itemize}
+        }
+        \ccvitem{Project}{Keba Ticketing, developed for Romanian Commercial Bank, a member of ERSTE Group
+
+        \bigskip BCR has around 9000 ATMs spread through the country. Every ATM sends problem and fix messages to the Keba Ticketing system. The system interprets the messages and automatically opens(closes) tickets for the right teams. For example if an ATM is out of cash, a ticket for the Replenishment Team is open. The system gets thousands hundreds of events every minute.
+        }
+        \ccvitem{Used technologies \& tools}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: Spring MVC 2.5, Spring Core 2.5, Hibernate 3, SOAP, WDSL, Drools, JUnit
+            \item Web Server: Tomcat
+            \item IDE: Netbeans, SqlDeveloper
+            \item Database: Oracle 10i
+            \item Build management and testing: Maven
+            \item Revision control: Subversion
+            \item Issue tracking: JIRA
+            \item Continuous Integration: Jenkins
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Automation \& Software Development}
+
+        % Work Experience @ WAPPA
+        \tabularnewline
+        \ccvitem{\textbf{{\large Jan 2011 $\longrightarrow$ July 2011}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Wappa (\weblink{http://www.wappa.be/company.html}), Bucharest, Romania}
+        \ccvitem{Highlights}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Develop Java enterprise applications using Seam Framework and J2EE 5.0 technologies
+            \item Write unit test and integration tests
+            \item Work in an Agile environment, use Test Driven Development
+          \end{itemize}
+        }
+        \ccvitem{Project}{OVAM Project
+
+        \bigskip Work in a team of five people. Develop an application for The Flemish Public Waste Ministry. The webapp manages the flows of documents and certificates within OVAM. It also manages clients and payments.
+It is developed using the Agile methodologies, in thirty iterations, during a period of an year and a half.
+        }
+        \ccvitem{Used technologies \& tools}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: Seam Framework, J2EE 5.0, EJB 3.0, JSF, SOAP, WDSL, Drools, TestNG, Selenium
+            \item Application Server: Jboss Application Server
+            \item IDE: Netbeans, Database Navigator
+            \item Database: IBM DB2
+            \item Build management and testing: Maven
+            \item Revision control: Subversion
+            \item Issue tracking: JIRA
+            \item Continuous Integration: Bamboo
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Software Development}
+
+        % Work Experience @ Raiffeisen
+        \tabularnewline
+        \ccvitem{\textbf{{\large Oct 2009 $\longrightarrow$ Dec 2010}}}{\textbf{{\large Application Designer}}}
+        \ccvitem{Employer}{Raiffeisen Bank (\weblink{http://www.raiffeisen.ro/en/}), Bucharest, Romania}
+        \ccvitem{Highlights}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Create project design document (including UML diagrams), user and administration guide, based on functional specifications
+            \item Design and create web-based applications using IBM Websphere Portal and JSR-168 Portal technologies
+            \item Design and create web services
+            \item Create the architecture for the databases used by the web-based applications
+            \item Write automated testing suites
+          \end{itemize}
+        }
+        \ccvitem{Projects}{Periodic Commissioning and Promotions Project (1 year and 3 months)
+
+          \bigskip Tasks \& roles
+          \begin{itemize}
+            \item Create the design document, based on the functional specifications
+            \item Design and created 3 portlets, one for searching clients, one for defining periodic commissioning, and one for defining promotions
+            \item Design the database for the project
+            \item Develop automated testing suites for the service layer of the application
+          \end{itemize}
+
+          \bigskip Internet Banking (11 months)
+
+          \bigskip Tasks \& roles
+          \begin{itemize}
+            \item Create the design document, based on the functional specifications
+            \item Design and create a web service, optimized for high volume of data and users (the service is called for processing every Internet Banking transaction from Raiffeisen)
+            \item Design and created the database for the project
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: JSR-168, Spring MVC Portal 2.5, Hibernate 3, GWT, WSDL, SOAP, Hibernate
+            \item Application Server: IBM Websphere Application Server
+            \item IDE: Rational Application Developer, Eclipse, Netbeans
+            \item Database: Oracle
+            \item Build management and testing: Maven
+            \item Revision control: Subversion, Aldon
+            \item Issue tracking: Mercury
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Banking}
+
+        % Work Experience @ Siveco
+        \tabularnewline
+        \ccvitem{\textbf{{\large Aug 2008 $\longrightarrow$ Sept 2009}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Siveco (\weblink{http://www.siveco.ro/en/}), Bucharest, Romania}
+        \ccvitem{Projects}{IACS Project for APIA Romania (Agricultural Payment Agency) (1 year)
+
+          \bigskip Work in a team of more than ten developers on IACS Project for APIA Romania (Agricultural Payment Agency)
+IACS (Integrated Administration and Control System) makes it possible to develop direct and indirect (data warehouse for animals, land, applicants, control and administration processes) system modules. It constitutes the basis for agricultural grants from the EU.
+
+          \bigskip Tasks \& roles
+          \begin{itemize}
+            \item Create the design of the application and UML diagrams, based on the functional specifications
+            \item Analysis and development using the project specific technologies
+            \item Work in a team of more than ten developers
+          \end{itemize}
+
+          \bigskip SIVZILLA (2 months)
+
+          \bigskip Sivzilla is a bug tracking system, similar with Bugzilla
+
+          \bigskip Tasks \& roles
+          \begin{itemize}
+            \item Create the design of the application and UML diagrams, based on the functional specifications
+            \item Develop the application using the project specific technologies
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Technologies: EJB 3.0, JSF, GWT, Hibernate 3, Spring Core, GWT, SOAP, WDSL, JUnit
+            \item Application Server: JBoss 5.0
+            \item IDE: Eclipse
+            \item Database: Oracle
+            \item Build management and testing: Maven
+            \item Revision control: Subversion
+            \item Issue tracking: JIRA
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Software Development}
+
+        % Work Experience @ ITC Networks
+        \tabularnewline
+        \ccvitem{\textbf{{\large Oct 2007 $\longrightarrow$ July 2008}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{ITC Networks (\weblink{http://www.itcnetworks.ro}), Bucharest, Romania}
+        \ccvitem{Main Activities \& Responsibilities}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Work on developing a security solution for a series of Nortel switches.
+            \item Work with the testing team located in Santa Clara (USA)
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools:}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Programming Language: C
+            \item Platforms: Nortel Secure Network Access Switch
+            \item IDE: Eclipse, VIM
+            \item Operating systems: VxWorks, Linux, Windows
+            \item Revision control and issue tracker: IBM ClearCase
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Software Development}
+
+        % Work Experience @ Gameloft
+        \tabularnewline
+        \ccvitem{\textbf{{\large July 2005 $\longrightarrow$ Sept 2007}}}{\textbf{{\large Software Engineer}}}
+        \ccvitem{Employer}{Gameloft (\weblink{http://www.gameloft.ro/}), Bucharest, Romania}
+        \ccvitem{Main Activities \& Responsibilities}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Work on developing and porting mobile games to J2ME and DOJA phones
+            \item Develop and ported mobile games on the J2ME platform
+            \item Work with other development and testing teams located in France, China or India
+          \end{itemize}
+        }
+        \ccvitem{Used technologies \& tools:}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Programming Language: Java
+            \item Platforms: J2ME, DoJa
+            \item IDE: Eclipse, Netbeans, jEdit
+          \end{itemize}
+        }
+        \ccvitem{Type of Business or Sector}{Mobile Games Development}
+        % Education and Training
+
+        \ccvsection{education}{Education and Training}
+
+        \ccvitem{\textbf{{\large 2004 $\longrightarrow$ 2009}}}{\textbf{{\large Bachelor Degree in Computer Science}}}
+        \ccvitem{}{POLITEHNICA University of Bucharest}
+
+        \tabularnewline
+        \ccvitem{\textbf{{\large 2000 $\longrightarrow$ 2004}}}{\textbf{{\large Ovidius High School, Constanta}}}
+
+        \tabularnewline
+
+        % Personal Skills and Competences
+
+        \ccvsection{skills}{Personal Skills}	
+
+        \ecvmothertongue{\normalsize Romanian}
+        \tabularnewline
+
+        \ecvitem{Other Languages}{}
+        \ecvlanguageheader{(*)}
+        \ecvlanguage{English}{\ecvCOne}{\ecvCOne}{\ecvBTwo}{\ecvBTwo}{\ecvCOne}
+        \ecvlanguagefooter{(*)}
+
+        \tabularnewline
+
+        \ccvitem{Communication Skills}{
+          \vspace{-12pt}
+          \begin{itemize}
+                 \item Good ability to work individually or as a team with a strong sense of responsibility on any of the situations
+                \item Excellent communication skills, gained through working with the testing teams and upper management
+                \item Ability to respond well under pressure preserving a professional rigor
+                \item Good ability to adapt to multicultural environments, gained through working in international teams
+            \end{itemize}
+        }
+
+        \ccvitem{Organisational Skills and Competences}{
+            \vspace{-12pt}
+            \begin{itemize}
+                \item Ability to manage projects with a sense of organization and competence
+                \item Ease of transmission of knowledge and development methodologies
+                \item Elevated ability for self-criticism and self-evaluation of the work performed
+            \end{itemize}
+        }
+        
+        \ccvitem{Job Related Skills}{
+            \vspace{-12pt}
+            \begin{itemize}
+              \item Programming Languages - Advanced: Java
+              \item Programming Languages - Intermediate: Ruby, SQL
+              \item Other technologies: CSS, JavaScript, HTML, UML, XML, Maven
+              \item Database Management Systems: PostgreSQL, Oracle, IBM DB2, Couchbase, MongoDB
+              \item Version Control Systems: Git and Subversion
+              \item Java Related: Spring, Hibernate, JPA, JSF, RESTlet, JAX-RS, Solr, Guava, EJB, JBoss Seam
+              \item Java Frontend: Spring MVC, GWT, Freemarker
+              \item Java Testing: JUnit, TestNG, Mockito
+              \item Indexing: Solr, ElasticSearch
+              \item Application Servers: WebSphere Application Server, WebSphere Portal 6.0, JBoss 5.x
+              \item Web Servers: Tomcat, Jetty
+            \end{itemize}
+         }	
+        
+        \ccvitem{Computer Skills}{
+            \vspace{-12pt}
+            \begin{itemize}
+              \item Microsoft Word, PowerPoint, Excel, Outlook, Lotus, OpenOffice 
+              \item Photoshop, Flash, Dreamwaver, Corel Draw, Adobe Lightroom
+              \item Mac OS X, Windows, Linux
+            \end{itemize}
+         }
+
+        \ccvitem{Artistic Skills and Competences}{
+            \vspace{-12pt}
+            \begin{itemize}
+                \item Photography.
+            \end{itemize}
+        }
+
+        \ccvitem{Other Skills and Competences}{
+            \vspace{-12pt}
+            \begin{itemize}
+                \item Ease of learning and research autonomously
+            \end{itemize}
+        }
+
+        \ccvitem{Driving License}{B Category}
+
+        % Additional Information
+
+        \ccvsection{extra}{Additional Information}
+
+        \ccvitem{Certifications}{
+          \vspace{-12pt}
+          \begin{itemize}
+            \item Sun Certified Web Component Developer 5.0
+            \item Sun Certified Java Programmer 6.0
+            \item CISCO Certified Network Associate 1
+          \end{itemize}
+        }
+
+    \end{europecv}
+
+\end{document}
